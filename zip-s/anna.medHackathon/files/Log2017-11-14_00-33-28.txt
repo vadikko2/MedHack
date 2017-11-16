@@ -1,0 +1,2 @@
+{"name":"Кропотова Ирина Алексеевна ","gender":"male","age":"45","height":"178","weight":"74","feet size":"43","lifestyle":"Среднии","pathology":"none","trauma":"перелом левой ноги, перелом позвоночника(копчик)","dominant hand":"right","hand retrained":"no"}
+{"gait":"Ходьба","footWear":"Без обуви","weight":"Без дополнительного веса","hunger":"Сытый","influence":"Пьяный"}

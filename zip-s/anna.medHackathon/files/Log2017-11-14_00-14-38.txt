@@ -1,0 +1,2 @@
+{"name":"Кропотова Ирина Алексеевна ","gender":"female","age":"15","height":"158","weight":"48","feet size":"36","lifestyle":"Среднии","pathology":"дисплозия ","trauma":"никроз головки правого бедра ","dominant hand":"right","hand retrained":"no"}
+{"gait":"Ходьба","footWear":"Каблук-шпилька","weight":"Вес на правом плече","hunger":"Сытый","influence":"Трезвый"}
