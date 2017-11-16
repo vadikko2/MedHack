@@ -4,6 +4,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import parse
 import math
+import sys
+
+def help():
+    print('add argument path=<path to data>')
 
 def preprocess(x):
     tmpSin = []
@@ -22,8 +26,15 @@ def preprocess(x):
     x+=tmpSigm+tmpSqr+tmp3
     return x
 
+path = ''
 
-p = parse.Parser('/home/vadim/hackatones/medhack/data/')
+try:
+    key,path = sys.argv[1].split('=')
+except:
+    help()
+    sys.exit()
+
+p = parse.Parser(path)
 p.parse_path(100)
 p.delete_from_back(20)
 dataset = p.get_split_database(11)
@@ -72,7 +83,6 @@ y_Z_test = y_Z[int((len(y_Z)/2))+1:]
 '''
 
 
-
 # Create linear regression object
 regrX = linear_model.Ridge(.5)
 # Train the model using the training sets
@@ -90,9 +100,6 @@ print('Variance score (X): %.2f' % r2_score(y_X_test, y_X_pred))
 
 
 
-
-
-
 # Create linear regression object
 regrY = linear_model.Ridge(.5)
 # Train the model using the training sets
@@ -107,9 +114,6 @@ print("Mean squared error (Y): %.2f"
       % mean_squared_error(y_Y_test, y_Y_pred))
 # Explained variance score: 1 is perfect prediction
 print('Variance score (Y): %.2f' % r2_score(y_Y_test, y_Y_pred))
-
-
-
 
 
 

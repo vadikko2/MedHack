@@ -96,18 +96,20 @@ class Parser:
             os.chdir(path)
             file_names = os.listdir()
             for i in range(len(file_names)):
-                with open(file_names[i]) as f:
-                    person_info = json.loads(f.readline())
-                    walk_info = json.loads(f.readline())
-                    tmp = f.readlines()
-                    if (len(tmp) <= min_size_dataset):
-                        print('Слишком короткая выборка:' + " "+ person_info['name'] + ", "+ file_names[i]  + ", size = "+ str(len(tmp)))
-                    full_file = []
-                    for fd in tmp:
-                        txyz = fd.replace('\n', '').split('\t')
-                        four = dict(time = int(txyz[0]), x = float(txyz[1]), y = float(txyz[2]), z = float(txyz[3]))
-                        full_file.append(four)
-                    self._data.append(dict(person_info = person_info, walk_info = walk_info, data = full_file))
+                if 'txt' in file_names[i]:
+                    with open(file_names[i]) as f:
+                        person_info = json.loads(f.readline())
+                        walk_info = json.loads(f.readline())
+                        tmp = f.readlines()
+                        if (len(tmp) <= min_size_dataset):
+                            print('Слишком короткая выборка:' + " "+ person_info['name'] + ", "+ file_names[i]  + ", size = "+ str(len(tmp)))
+                        full_file = []
+                        for fd in tmp:
+                            txyz = fd.replace('\n', '').split('\t')
+                            four = dict(time = int(txyz[0]), x = float(txyz[1]), y = float(txyz[2]), z = float(txyz[3]))
+                            full_file.append(four)
+                        self._data.append(dict(person_info = person_info, walk_info = walk_info, data = full_file))
+                        
         return self._data
 
 
@@ -169,9 +171,20 @@ class Parser:
             split_data += self.split_only_data_element(d, parts_size)
         return split_data
 
+def help():
+    print('add argument path=<path to data>')
 
 if __name__ == "__main__":
-    p = Parser('/home/vadim/hackatones/medhack/data/')
+
+    path = ''
+
+    try:
+        key,path = sys.argv[1].split('=')
+    except:
+        help()
+        sys.exit()
+
+    p = Parser(path)
     data = p.parse_path(100)
     #p.view_rating('person_info', 'pathology', data)
     p.delete_from_back(20)

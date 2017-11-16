@@ -1,5 +1,3 @@
-
-
 import numpy
 import matplotlib.pyplot as plt
 from pandas import read_csv
@@ -10,6 +8,9 @@ from keras.layers import LSTM
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error
 
+def help():
+    print('add argument path=<path to data>')
+
 def create_dataset(dataset, look_back=1):
 	dataX, dataY = [], []
 	for i in range(len(dataset)-look_back-1):
@@ -18,6 +19,14 @@ def create_dataset(dataset, look_back=1):
 		dataY.append(dataset[i + look_back, 0])
 	return numpy.array(dataX), numpy.array(dataY)
 
+
+path = ''
+
+try:
+    key,path = sys.argv[1].split('=')
+except:
+    help()
+    sys.exit()
 
 numpy.random.seed(7)
 dataframe = read_csv(sys.argv[1], usecols=[1], engine='python', skipfooter=3)
