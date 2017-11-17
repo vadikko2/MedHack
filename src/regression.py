@@ -67,7 +67,7 @@ def preprocess(x, _list_params):
     x_tmp+=tmpSigm+tmpCos+tmpSin+tmpTn+tmp3+tmpSqr+tmp3+tmpArctn+tmpTn
     return x_tmp
 
-def training(database, coordinate, params, l2, minmax):
+def training(dataset, coordinate, params, l2, minmax):
     x, y = get_only_coordinate(coordinate, dataset, params)
     x = np.asarray(x)
     if l2:
@@ -107,12 +107,13 @@ def training(database, coordinate, params, l2, minmax):
     #y_test = y[int((len(y)/2))+1:]
 
 
-
-p = parse.Parser('/home/vadim/hackatones/medhack/data/')
-p.parse_path(100)
-p.delete_from_back(20)
-dataset = p.get_split_database(36)
-p.edit_features()
-training(dataset, 'x', ['arctn'], False, False)
-training(dataset, 'y', ['arctn'], False, True)
-training(dataset, 'z', ['arctn'], False, False)
+if __name__ == "__main__":
+    p = parse.Parser('/home/vadim/hackatones/medhack/data/')
+    p.parse_path(100)
+    p.delete_from_back(500)
+    dataset = p.get_split_database(200)
+    print(len(dataset))
+    p.edit_features()
+    training(dataset, 'x', [], False, False)
+    training(dataset, 'y', [], False, False)
+    training(dataset, 'z', [], False, False)
