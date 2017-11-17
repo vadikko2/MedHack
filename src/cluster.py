@@ -20,20 +20,18 @@ def get_only_coordinate_none_pathology(coord, dataset, params, needMeta = False)
             tmp = []
 
             if needMeta:
-                #print(dataset[i]['person_info']['gender'])
+                
                 tmp.append(dataset[i]['person_info']['age'])
                 tmp.append(dataset[i]['person_info']['gender'])
                 tmp.append(dataset[i]['person_info']['height'])
                 tmp.append(dataset[i]['person_info']['feet size'])
                 tmp.append(dataset[i]['walk_info']['gait'])
-                #tmp.append(dataset[i]['walk_info']['footWear'])
-                #tmp.append(dataset[i]['walk_info']['hunger'])
+          
                 tmp.append(dataset[i]['walk_info']['weight'])
 
                 for j in range(len(dataset[i]['data']) - 1):
                     tmp.append(dataset[i]['data'][j][coord])
-                    #tmp.append(dataset[i]['data'][j]['y'])
-                    #tmp.append(dataset[i]['data'][j]['z'])
+                    
             
                 x.append(np.asarray(regression.preprocess(tmp, params)))
 
@@ -58,20 +56,17 @@ def get_only_coordinate_pathology(coord, dataset, params, pathology ,needMeta = 
 
             if needMeta:
 
-                #print(dataset[i]['person_info']['gender'])
                 tmp.append(dataset[i]['person_info']['age'])
                 tmp.append(dataset[i]['person_info']['gender'])
                 tmp.append(dataset[i]['person_info']['height'])
                 tmp.append(dataset[i]['person_info']['feet size'])
                 tmp.append(dataset[i]['walk_info']['gait'])
-                #tmp.append(dataset[i]['walk_info']['footWear'])
-                #tmp.append(dataset[i]['walk_info']['hunger'])
+              
                 tmp.append(dataset[i]['walk_info']['weight'])
 
                 for j in range(len(dataset[i]['data']) - 1):
                     tmp.append(dataset[i]['data'][j][coord])
-                    #tmp.append(dataset[i]['data'][j]['y'])
-                    #tmp.append(dataset[i]['data'][j]['z'])
+                    
             
                 x.append(np.asarray(regression.preprocess(tmp, params)))
             else:
@@ -180,10 +175,10 @@ all_y = copy.deepcopy(y_none) + copy.deepcopy(y)
 viewData([x_none,x], [len(x_none[0]), len(x[0])], [y_none, y])
 viewData([all_data], [len(all_data[0])], [all_y])
 
-x_none = preprocessing.normalize(x_none, norm = 'l2')
-x = preprocessing.normalize(x, norm = 'l2')
+x_none = preprocessing.minmax_scale(x_none, feature_range=(0, 1))
+x = preprocessing.minmax_scale(x, feature_range=(0, 1))
 
-all_data = preprocessing.normalize(all_data, norm = 'l2')
+all_data = preprocessing.minmax_scale(all_data, feature_range=(0, 1))
 
 viewData([x_none,x], [len(x_none[0]), len(x[0])], [y_none, y])
 viewData([all_data], [len(all_data[0])], [all_y])
