@@ -157,6 +157,8 @@ p.delete_from_back(500)
 dataset = p.get_split_database(200)
 p.edit_features()
 
+meta = True
+
 pathology = []
 for fd in dataset:
 	temp = fd['person_info']['pathology']
@@ -165,8 +167,8 @@ for fd in dataset:
 
 print(pathology)
 
-x_none, _ = get_only_coordinate_none_pathology('x', dataset, ['arctn'], needMeta = False)
-x, _, y = get_only_coordinate_pathology('x', dataset, ['arctn'], pathology, needMeta = False)
+x_none, _ = get_only_coordinate_none_pathology('x', dataset, ['arctn'], needMeta = meta)
+x, _, y = get_only_coordinate_pathology('x', dataset, ['arctn'], pathology, needMeta = meta)
 
 print(len(x_none), len(x))
 
