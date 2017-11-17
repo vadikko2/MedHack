@@ -77,7 +77,7 @@ def get_only_coordinate_pathology(coord, dataset, params, pathology ,needMeta = 
 
             y.append(dataset[i]['data'][len(dataset[i]['data']) - 1][coord])
 
-            mark.append(pathology.index(dataset[i]['person_info']['pathology']))
+            mark.append(pathology.index(dataset[i]['person_info']['pathology']).lower())
 
     return x, y, mark
 
@@ -156,7 +156,7 @@ meta = True
 
 pathology = []
 for fd in dataset:
-	temp = fd['person_info']['pathology']
+	temp = fd['person_info']['pathology'].lower()
 	if not temp in pathology:
 		pathology.append(temp)
 
