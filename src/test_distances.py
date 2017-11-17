@@ -4,63 +4,82 @@ import matplotlib.pyplot as plt
 import parse
 import regression
 from sklearn.metrics.pairwise import euclidean_distances, manhattan_distances#, chebyshev_distances
+import sys
 
-
-def get_only_coordinate_none_pathology(coord, dataset, params):
+def get_only_coordinate_none_pathology(coord, dataset, params, needMeta = False):
     x = []
     y = []
     for i in range(len(dataset)):
         if (dataset[i]['person_info']['pathology'] == 'none') and (dataset[i]['walk_info']['gait'] == 0) and (dataset[i]['person_info']['trauma'] == 'none'):
             tmp = []
-            #print(dataset[i]['person_info']['gender'])
-            tmp.append(dataset[i]['person_info']['age'])
-            tmp.append(dataset[i]['person_info']['gender'])
-            tmp.append(dataset[i]['person_info']['height'])
-            tmp.append(dataset[i]['person_info']['feet size'])
-            tmp.append(dataset[i]['walk_info']['gait'])
-            #tmp.append(dataset[i]['walk_info']['footWear'])
-            #tmp.append(dataset[i]['walk_info']['hunger'])
-            tmp.append(dataset[i]['walk_info']['weight'])
-            for j in range(len(dataset[i]['data']) - 1):
-                tmp.append(dataset[i]['data'][j][coord])
-                #tmp.append(dataset[i]['data'][j]['y'])
-                #tmp.append(dataset[i]['data'][j]['z'])
-            x.append(np.asarray(regression.preprocess(tmp, params)))
+            if needMeta:
+                #print(dataset[i]['person_info']['gender'])
+                tmp.append(dataset[i]['person_info']['age'])
+                tmp.append(dataset[i]['person_info']['gender'])
+                tmp.append(dataset[i]['person_info']['height'])
+                tmp.append(dataset[i]['person_info']['feet size'])
+                tmp.append(dataset[i]['walk_info']['gait'])
+                #tmp.append(dataset[i]['walk_info']['footWear'])
+                #tmp.append(dataset[i]['walk_info']['hunger'])
+                tmp.append(dataset[i]['walk_info']['weight'])
+
+                for j in range(len(dataset[i]['data']) - 1):
+                    tmp.append(dataset[i]['data'][j][coord])
+                    #tmp.append(dataset[i]['data'][j]['y'])
+                    #tmp.append(dataset[i]['data'][j]['z'])
+            
+                x.append(np.asarray(regression.preprocess(tmp, params)))
+            else:
+                for j in range(len(dataset[i]['data']) - 1):
+                    x.append(dataset[i]['data'][j][coord])
+            
             y.append(dataset[i]['data'][len(dataset[i]['data']) - 1][coord])
     return x, y
 
 
-def get_only_coordinate_pathology(coord, dataset, params):
+def get_only_coordinate_pathology(coord, dataset, params, needMeta = False):
     x = []
     y = []
+   
     for i in range(len(dataset)):
         if (dataset[i]['person_info']['pathology'] != 'none') and (dataset[i]['walk_info']['gait'] == 0) and (dataset[i]['person_info']['trauma'] == 'none'):
             tmp = []
-            #print(dataset[i]['person_info']['gender'])
-            tmp.append(dataset[i]['person_info']['age'])
-            tmp.append(dataset[i]['person_info']['gender'])
-            tmp.append(dataset[i]['person_info']['height'])
-            tmp.append(dataset[i]['person_info']['feet size'])
-            tmp.append(dataset[i]['walk_info']['gait'])
-            #tmp.append(dataset[i]['walk_info']['footWear'])
-            #tmp.append(dataset[i]['walk_info']['hunger'])
-            tmp.append(dataset[i]['walk_info']['weight'])
-            for j in range(len(dataset[i]['data']) - 1):
-                tmp.append(dataset[i]['data'][j][coord])
-                #tmp.append(dataset[i]['data'][j]['y'])
-                #tmp.append(dataset[i]['data'][j]['z'])
-            x.append(np.asarray(regression.preprocess(tmp, params)))
-            y.append(dataset[i]['data'][len(dataset[i]['data']) - 1][coord])
-    return x, y
 
-p = parse.Parser('/home/vadim/hackatones/medhack/data/')
+            if needMeta:
+                #print(dataset[i]['person_info']['gender'])
+                tmp.append(dataset[i]['person_info']['age'])
+                tmp.append(dataset[i]['person_info']['gender'])
+                tmp.append(dataset[i]['person_info']['height'])
+                tmp.append(dataset[i]['person_info']['feet size'])
+                tmp.append(dataset[i]['walk_info']['gait'])
+                #tmp.append(dataset[i]['walk_info']['footWear'])
+                #tmp.append(dataset[i]['walk_info']['hunger'])
+                tmp.append(dataset[i]['walk_info']['weight'])
+
+                for j in range(len(dataset[i]['data']) - 1):
+                    tmp.append(dataset[i]['data'][j][coord])
+                    #tmp.append(dataset[i]['data'][j]['y'])
+                    #tmp.append(dataset[i]['data'][j]['z'])
+            
+                x.append(np.asarray(regression.preprocess(tmp, params)))
+            else:
+                for j in range(len(dataset[i]['data']) - 1):
+                    x.append(dataset[i]['data'][j][coord])
+
+            y.append(dataset[i]['data'][len(dataset[i]['data']) - 1][coord])
+
+    return x, y
+    
+p = parse.Parser(sys.argv[1])
 p.parse_path(100)
 p.delete_from_back(500)
 dataset = p.get_split_database(200)
 p.edit_features()
 
-x_none, _ = get_only_coordinate_none_pathology('x', dataset, ['arctn'])
-x, _ = get_only_coordinate_pathology('x', dataset, ['arctn'])
+x_none, _ = get_only_coordinate_none_pathology('x', dataset, ['arctn'], needMeta = True)
+x, _ = get_only_coordinate_pathology('x', dataset, ['arctn'], needMeta = True)
+
+print(len(x_none) , len(x))
 x_tmp = x[::-1]
 x_tmp_none = x_none[::-1]
 points = []

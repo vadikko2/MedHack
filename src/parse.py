@@ -80,6 +80,7 @@ class Parser:
         x = []
         for fd in data:
             x.append(fd[lable1][lable2])
+            
         from collections import Counter
         import numpy as np
         import matplotlib.pyplot as plt
@@ -100,22 +101,23 @@ class Parser:
         self.delete_all_info_files()
         self.edit_features()
         for path in self._list_path:
-            os.chdir(self._path)
-            os.chdir(path)
-            file_names = os.listdir()
-            for i in range(len(file_names)):
-                with open(file_names[i]) as f:
-                    person_info = json.loads(f.readline())
-                    walk_info = json.loads(f.readline())
-                    tmp = f.readlines()
-                    if (len(tmp) <= min_size_dataset):
-                        print('Слишком короткая выборка:' + " "+ person_info['name'] + ", "+ file_names[i]  + ", size = "+ str(len(tmp)))
-                    full_file = []
-                    for fd in tmp:
-                        txyz = fd.replace('\n', '').split('\t')
-                        four = dict(time = int(txyz[0]), x = float(txyz[1]), y = float(txyz[2]), z = float(txyz[3]))
-                        full_file.append(four)
-                    self._data.append(dict(person_info = person_info, walk_info = walk_info, data = full_file))
+            if not '.' in path:
+                os.chdir(self._path)
+                os.chdir(path)
+                file_names = os.listdir()
+                for i in range(len(file_names)):
+                    with open(file_names[i]) as f:
+                        person_info = json.loads(f.readline())
+                        walk_info = json.loads(f.readline())
+                        tmp = f.readlines()
+                        if (len(tmp) <= min_size_dataset):
+                            print('Слишком короткая выборка:' + " "+ person_info['name'] + ", "+ file_names[i]  + ", size = "+ str(len(tmp)))
+                        full_file = []
+                        for fd in tmp:
+                            txyz = fd.replace('\n', '').split('\t')
+                            four = dict(time = int(txyz[0]), x = float(txyz[1]), y = float(txyz[2]), z = float(txyz[3]))
+                            full_file.append(four)
+                        self._data.append(dict(person_info = person_info, walk_info = walk_info, data = full_file))
         return self._data
 
 
@@ -129,12 +131,13 @@ class Parser:
     '''
     def delete_all_info_files(self):
         for path in self._list_path:
-            os.chdir(self._path)
-            os.chdir(path)
-            try:
-                os.remove('info.txt')
-            except:
-                continue
+            if not '.' in path:
+                os.chdir(self._path)
+                os.chdir(path)
+                try:
+                    os.remove('info.txt')
+                except:
+                    continue
 
     '''
     удаление n последних элементов из всей выборки (Необходимо ещё определиться, сколько именно надо вырезать с конца)
