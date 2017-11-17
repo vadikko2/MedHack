@@ -14,33 +14,40 @@ class Parser:
     инициализация словарей для конвертирования выборки
     '''
     def init_info_dicts(self):
-        person_info = dict(lifestyle = dict(sedentary = 1, medium = 2, active = 3),\
-        gender = dict(male = 1, female = 0), hand_retrained = dict(yes = 1, no = 0), \
-        domination_hand = dict(left = 0, right = 1))
-
-        walk_info = dict(hunger = dict(hungry = 0, full = 1, overwrought = 2), \
-        footWear = dict(barefoot = 0, sport = 1, without_heel = 2, low_heel = 3, middle_heel = 4, height_heel = 5, spike_heel = 6),\
-        gait = dict(walk = 0, fast_walk = 1, run = 2, stairs_up = 3, stairs_down = 4),\
-        weight = dict(free = 0,lef_hand = 1, right_hand = 2, bag = 3, left_shoulder = 4, right_shoulder = 5, left_shoulder_across = 6, right_shoulder_across = 7),\
-        influence = dict(sober = 0, drunk = 1))
+        person_info = dict(sedentary = 1, medium = 2, active = 3,male = 1, female = 0,yes = 1, no = 0,left = 0, right = 1)
+        walk_info = dict(hungry = 0, full = 1, overwrought = 2, barefoot = 0, sport = 1, without_heel = 2, low_heel = 3, middle_heel = 4, height_heel = 5, spike_heel = 6,\
+        walk = 0, fast_walk = 1, run = 2, stairs_up = 3, stairs_down = 4, free = 0,left_hand = 1, right_hand = 2, bag = 3, left_shoulder = 4, right_shoulder = 5, left_shoulder_across = 6, right_shoulder_across = 7,\
+        sober = 0, drunk = 1)
         return person_info, walk_info
 
     def init_right_deatures(self):
-        right_futures = dict(sedentary = 'Малоподвижный', medium = 'Средний', active = 'Активный',\
+        right_futures = dict(sedentary = 'Малоподвижный', medium = 'Среднии', active = 'Активный',\
         hungry = 'Голодный', full = 'Сытый', overwrought = 'Переевший',\
-        barefoot = 'Без обуви', sport = 'Спортивная', without_heel = 'Без каблука', low_heel = 'Низкий каблук', middle_heel = 'Средний каблук', height_heel = 'Высокий каблук', spike_heel = 'Шпилька',\
+        barefoot = 'Без обуви', sport = 'Спортивная', without_heel = 'Без каблука', low_heel = 'Невысокий каблук', middle_heel = 'Средний каблук', height_heel = 'Высокий каблук', spike_heel = 'Каблук-шпилька',\
         walk = 'Ходьба', fast_walk = 'Быстрая ходьба', run = 'Бег', stairs_up = 'Подъем по лестнице вверх', stairs_down = 'Подъем по лестнице вниз',\
         free = 'Без дополнительного веса', left_hand = 'Вес в левой руке', right_hand = 'Вес в правой руке', bag = 'Вес за спиной (рюкзак)', left_shoulder = 'Вес на левом плече', right_shoulder = 'Вес на правом плече', left_shoulder_across = 'Лямка на левом, вес справа', right_shoulder_across = 'Лямка на правом, вес слева',\
-        soder = 'Трезвый', drunk = 'Пьяный')
+        sober = 'Трезвый', drunk = 'Пьяный', yes = 'yes', no = 'no', left = 'left', right = 'right', male = 'male', female = 'female')
         return right_futures
 
     '''
     замена русскоязычных и составных фраз в выборке
     '''
     def edit_features(self):
-        edit_data = []
+        rang_params = ['name', 'age', 'feet size', 'height', 'weight', 'pathology', 'trauma']
+        to_int_params = ['age', 'feet size', 'height', 'weight']
         for d in self._data:
-            pass
+            for key, value in list(d['person_info'].items()):
+                if key in to_int_params:
+                    d['person_info'][key] = int(value)
+                if key not in rang_params:
+                    right_key = list(self._right_features.keys())[list(self._right_features.values()).index(value)]
+                    right_value = self._person_info[right_key]
+                    d['person_info'][key] = right_value
+
+            for key, value in list(d['walk_info'].items()):
+                right_key = list(self._right_features.keys())[list(self._right_features.values()).index(value)]
+                right_value = self._walk_info[right_key]
+                d['walk_info'][key] = right_value
 
 
 
@@ -91,25 +98,24 @@ class Parser:
     '''
     def parse_path(self, min_size_dataset):
         self.delete_all_info_files()
+        self.edit_features()
         for path in self._list_path:
             os.chdir(self._path)
             os.chdir(path)
             file_names = os.listdir()
             for i in range(len(file_names)):
-                if 'txt' in file_names[i]:
-                    with open(file_names[i]) as f:
-                        person_info = json.loads(f.readline())
-                        walk_info = json.loads(f.readline())
-                        tmp = f.readlines()
-                        if (len(tmp) <= min_size_dataset):
-                            print('Слишком короткая выборка:' + " "+ person_info['name'] + ", "+ file_names[i]  + ", size = "+ str(len(tmp)))
-                        full_file = []
-                        for fd in tmp:
-                            txyz = fd.replace('\n', '').split('\t')
-                            four = dict(time = int(txyz[0]), x = float(txyz[1]), y = float(txyz[2]), z = float(txyz[3]))
-                            full_file.append(four)
-                        self._data.append(dict(person_info = person_info, walk_info = walk_info, data = full_file))
-                        
+                with open(file_names[i]) as f:
+                    person_info = json.loads(f.readline())
+                    walk_info = json.loads(f.readline())
+                    tmp = f.readlines()
+                    if (len(tmp) <= min_size_dataset):
+                        print('Слишком короткая выборка:' + " "+ person_info['name'] + ", "+ file_names[i]  + ", size = "+ str(len(tmp)))
+                    full_file = []
+                    for fd in tmp:
+                        txyz = fd.replace('\n', '').split('\t')
+                        four = dict(time = int(txyz[0]), x = float(txyz[1]), y = float(txyz[2]), z = float(txyz[3]))
+                        full_file.append(four)
+                    self._data.append(dict(person_info = person_info, walk_info = walk_info, data = full_file))
         return self._data
 
 
@@ -171,22 +177,14 @@ class Parser:
             split_data += self.split_only_data_element(d, parts_size)
         return split_data
 
-def help():
-    print('add argument path=<path to data>')
 
 if __name__ == "__main__":
-
-    path = ''
-
-    try:
-        key,path = sys.argv[1].split('=')
-    except:
-        help()
-        sys.exit()
-
-    p = Parser(path)
+    p = Parser('/home/vadim/hackatones/medhack/data/')
     data = p.parse_path(100)
     #p.view_rating('person_info', 'pathology', data)
     p.delete_from_back(20)
     split_data = p.get_split_database(10)
-    p.view_rating('walk_info', 'influence', split_data)
+    p.edit_features()
+    print(split_data[0]['person_info'])
+    print(split_data[0]['walk_info'])
+    #p.view_rating('walk_info', 'influence', split_data)

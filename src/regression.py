@@ -4,131 +4,115 @@ import matplotlib.pyplot as plt
 import numpy as np
 import parse
 import math
-import sys
 
-def help():
-    print('add argument path=<path to data>')
+def get_only_coordinate(coord, dataset, params):
+    x = []
+    y = []
+    #y_X = []
+    #y_Y = []
+    #y_Z = []
+    for i in range(len(dataset)):
+        if (dataset[i]['person_info']['pathology'] == 'none') and(dataset[i]['walk_info']['gait'] == 0) and (dataset[i]['person_info']['trauma'] == 'none'):
+            tmp = []
+            #print(dataset[i]['person_info']['gender'])
+            tmp.append(dataset[i]['person_info']['age'])
+            tmp.append(dataset[i]['person_info']['gender'])
+            tmp.append(dataset[i]['person_info']['height'])
+            tmp.append(dataset[i]['person_info']['feet size'])
+            tmp.append(dataset[i]['walk_info']['gait'])
+            #tmp.append(dataset[i]['walk_info']['footWear'])
+            #tmp.append(dataset[i]['walk_info']['hunger'])
+            tmp.append(dataset[i]['walk_info']['weight'])
+            for j in range(len(dataset[i]['data']) - 1):
+                tmp.append(dataset[i]['data'][j][coord])
+                #tmp.append(dataset[i]['data'][j]['y'])
+                #tmp.append(dataset[i]['data'][j]['z'])
+            x.append(np.asarray(preprocess(tmp, params)))
+            y.append(dataset[i]['data'][len(dataset[i]['data']) - 1][coord])
+            #y_Y.append(dataset[i]['data'][len(dataset[i]['data']) - 1]['y'])
+            #y_Z.append(dataset[i]['data'][len(dataset[i]['data']) - 1]['z'])
+    return x, y
 
-def preprocess(x):
+def preprocess(x, _list_params):
     tmpSin = []
+    x_tmp = x
     tmpCos = []
     tmpSqr = []
     tmp3 = []
     tmpSqrt = []
     tmpLog = []
     tmpTn = []
-    tmpCtn = []
+    tmpArctn = []
     tmpSigm = []
-    for v in x:
-        tmpSigm.append(1 / (1 + math.exp(-v)))
-        tmpSqr.append(v**2)
-        tmp3.append(v**3)
-    x+=tmpSigm+tmpSqr+tmp3
-    return x
+    x = np.asarray(x)
+    x_mm = preprocessing.minmax_scale(x, feature_range=(-0.5, 0.5))
+    #print(x_mm)
+    for v in x_mm:
+        if 'sin' in _list_params:
+            tmpSin.append(math.asin(v))
+        if 'cos' in _list_params:
+            tmpCos.append(math.acos(v))
+        if 'sigm' in _list_params:
+            tmpSigm.append(1/ (1 + math.exp(-v)))
+        if 'sqr' in _list_params:
+            tmpSqr.append(v**2)
+        if '^3' in _list_params:
+            tmp3.append(v**3)
+        if 'tn' in _list_params:
+            tmpTn.append(math.tan(v))
+        if 'arctn' in _list_params:
+            tmpArctn.append(math.atan(v))
+        #if 'log10' in _list_params:
+        #    tmpLog.append(math.log10(v))
+    x_tmp+=tmpSigm+tmpCos+tmpSin+tmpTn+tmp3+tmpSqr+tmp3+tmpArctn+tmpTn
+    return x_tmp
 
-path = ''
+def training(database, coordinate, params, l2, minmax):
+    x, y = get_only_coordinate(coordinate, dataset, params)
+    x = np.asarray(x)
+    if l2:
+        x = preprocessing.normalize(x, norm = 'l2')
+    if minmax:
+        x = preprocessing.minmax_scale(x, feature_range=(0, 1))
+    y = np.asarray(y)
+    x_train = x[:int((len(x))*0.7)]
+    y_train = y[:int((len(y))*0.7)]
 
-try:
-    key,path = sys.argv[1].split('=')
-except:
-    help()
-    sys.exit()
+    x_test = x[int((len(x))*0.7)+1:]
+    y_test = y[int((len(y)*0.7))+1:]
 
-p = parse.Parser(path)
+    # Create linear regression object
+
+    regr = linear_model.LinearRegression()#Ridge (alpha = .5)
+    # Train the model using the training sets
+    regr.fit(x_train, y_train)
+    # Make predictions using the testing set
+    y_pred = regr.predict(x_test)
+
+    # The coefficients
+    print('Coefficients : \n', regr.coef_)
+    # The mean squared error
+    print("Mean squared error : %.2f"
+          % mean_squared_error(y_test, y_pred))
+    # Explained variance score: 1 is perfect prediction
+    print('Variance score : %.2f' % r2_score(y_test, y_pred))
+
+    #x_train = x[:int((len(x)/2)*0.7)]
+    #y_train = y[:int((len(y)/2)*0.7)]
+
+    #x_test = x[int((len(x)/2)*0.7)+1:int((len(x)/2))]
+    #y_test = y[int((len(y)/2)*0.7)+1:int((len(y)/2))]
+
+    #x_test = x[int((len(x)/2))+1:]
+    #y_test = y[int((len(y)/2))+1:]
+
+
+
+p = parse.Parser('/home/vadim/hackatones/medhack/data/')
 p.parse_path(100)
 p.delete_from_back(20)
-dataset = p.get_split_database(11)
-x = []
-y_X = []
-y_Y = []
-y_Z = []
-for i in range(len(dataset)):
-    if (dataset[i]['person_info']['pathology'] == 'none'):
-        tmp = []
-        tmp.append(int(dataset[i]['person_info']['age']))
-        tmp.append(1. if dataset[i]['person_info']['gender'] == 'male' else 0.)
-        tmp.append(int(dataset[i]['person_info']['height']))
-        tmp.append(int(dataset[i]['person_info']['feet size']))
-        for j in range(len(dataset[i]['data']) - 1):
-            tmp.append(dataset[i]['data'][j]['x'])
-            tmp.append(dataset[i]['data'][j]['y'])
-            tmp.append(dataset[i]['data'][j]['z'])
-        x.append(np.asarray(preprocess(tmp)))
-        y_X.append(dataset[i]['data'][len(dataset[i]['data']) - 1]['x'])
-        y_Y.append(dataset[i]['data'][len(dataset[i]['data']) - 1]['y'])
-        y_Z.append(dataset[i]['data'][len(dataset[i]['data']) - 1]['z'])
-
-#x = preprocessing.normalize(x, norm = 'l2')
-x = np.asarray(x)
-y_X = np.asarray(y_X)
-y_Y = np.asarray(y_Y)
-y_Z = np.asarray(y_Z)
-
-x_train = x[:int((len(x)/2)*0.7)]
-y_X_train = y_X[:int((len(y_X)/2)*0.7)]
-y_Y_train = y_Y[:int((len(y_X)/2)*0.7)]
-y_Z_train = y_Z[:int((len(y_X)/2)*0.7)]
-
-
-x_test = x[int((len(x)/2)*0.7)+1:int((len(x)/2))]
-y_X_test = y_X[int((len(y_X)/2)*0.7)+1:int((len(y_X)/2))]
-y_Y_test = y_Y[int((len(y_Y)/2)*0.7)+1:int((len(y_Y)/2))]
-y_Z_test = y_Z[int((len(y_Z)/2)*0.7)+1:int((len(y_Z)/2))]
-
-'''
-x_test = x[int((len(x)/2))+1:]
-y_X_test = y_X[int((len(y_X)/2))+1:]
-y_Y_test = y_Y[int((len(y_Y)/2))+1:]
-y_Z_test = y_Z[int((len(y_Z)/2))+1:]
-'''
-
-
-# Create linear regression object
-regrX = linear_model.Ridge(.5)
-# Train the model using the training sets
-regrX.fit(x_train, y_X_train)
-# Make predictions using the testing set
-y_X_pred = regrX.predict(x_test)
-
-# The coefficients
-print('Coefficients (X): \n', regrX.coef_)
-# The mean squared error
-print("Mean squared error (X): %.2f"
-      % mean_squared_error(y_X_test, y_X_pred))
-# Explained variance score: 1 is perfect prediction
-print('Variance score (X): %.2f' % r2_score(y_X_test, y_X_pred))
-
-
-
-# Create linear regression object
-regrY = linear_model.Ridge(.5)
-# Train the model using the training sets
-regrY.fit(x_train, y_Y_train)
-# Make predictions using the testing set
-y_Y_pred = regrY.predict(x_test)
-
-# The coefficients
-print('Coefficients (Y): \n', regrY.coef_)
-# The mean squared error
-print("Mean squared error (Y): %.2f"
-      % mean_squared_error(y_Y_test, y_Y_pred))
-# Explained variance score: 1 is perfect prediction
-print('Variance score (Y): %.2f' % r2_score(y_Y_test, y_Y_pred))
-
-
-
-
-# Create linear regression object
-regrZ = linear_model.Ridge(.5)
-# Train the model using the training sets
-regrZ.fit(x_train, y_Z_train)
-# Make predictions using the testing set
-y_Z_pred = regrZ.predict(x_test)
-
-# The coefficients
-print('Coefficients (Z): \n', regrZ.coef_)
-# The mean squared error
-print("Mean squared error (Z): %.2f"
-      % mean_squared_error(y_Z_test, y_Z_pred))
-# Explained variance score: 1 is perfect prediction
-print('Variance score (Z): %.2f' % r2_score(y_Z_test, y_Z_pred))
+dataset = p.get_split_database(36)
+p.edit_features()
+training(dataset, 'x', ['arctn'], False, False)
+training(dataset, 'y', ['arctn'], False, True)
+training(dataset, 'z', ['arctn'], False, False)
