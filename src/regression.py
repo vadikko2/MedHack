@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import parse
 import math
+from sklearn.svm import SVR
+from sklearn.model_selection import train_test_split
 
 def get_only_coordinate(coord, dataset, params):
     x = []
@@ -14,7 +16,6 @@ def get_only_coordinate(coord, dataset, params):
     for i in range(len(dataset)):
         if (dataset[i]['person_info']['pathology'] == 'none') and(dataset[i]['walk_info']['gait'] == 0) and (dataset[i]['person_info']['trauma'] == 'none'):
             tmp = []
-            #print(dataset[i]['person_info']['gender'])
             tmp.append(dataset[i]['person_info']['age'])
             tmp.append(dataset[i]['person_info']['gender'])
             tmp.append(dataset[i]['person_info']['height'])
@@ -25,12 +26,9 @@ def get_only_coordinate(coord, dataset, params):
             tmp.append(dataset[i]['walk_info']['weight'])
             for j in range(len(dataset[i]['data']) - 1):
                 tmp.append(dataset[i]['data'][j][coord])
-                #tmp.append(dataset[i]['data'][j]['y'])
-                #tmp.append(dataset[i]['data'][j]['z'])
             x.append(np.asarray(preprocess(tmp, params)))
             y.append(dataset[i]['data'][len(dataset[i]['data']) - 1][coord])
-            #y_Y.append(dataset[i]['data'][len(dataset[i]['data']) - 1]['y'])
-            #y_Z.append(dataset[i]['data'][len(dataset[i]['data']) - 1]['z'])
+
     return x, y
 
 def preprocess(x, _list_params):
@@ -75,12 +73,15 @@ def training(dataset, coordinate, params, l2, minmax):
     if minmax:
         x = preprocessing.minmax_scale(x, feature_range=(0, 1))
     y = np.asarray(y)
+    '''
     x_train = x[:int((len(x))*0.7)]
     y_train = y[:int((len(y))*0.7)]
 
     x_test = x[int((len(x))*0.7)+1:]
     y_test = y[int((len(y)*0.7))+1:]
-
+    '''
+    x_train, x_test, y_train, y_test = train_test_split(
+        x, y, test_size=0.33, random_state=42)
     # Create linear regression object
 
     regr = linear_model.Ridge (alpha = .5)#Ridge (alpha = .5)
@@ -88,14 +89,16 @@ def training(dataset, coordinate, params, l2, minmax):
     regr.fit(x_train, y_train)
     # Make predictions using the testing set
     y_pred = regr.predict(x_test)
-
+    '''
+    svr_rbf = SVR(kernel='rbf', C=1e3, gamma=0.1)
+    y_pred = svr_rbf.fit(x_train, y_train).predict(x_test)'''
     # The coefficients
     #print('Coefficients : \n', regr.coef_)
     # The mean squared error
-    print("Mean squared error : %.2f"
-          % mean_squared_error(y_test, y_pred))
+    #print("Mean squared error : %.2f"
+    #      % mean_squared_error(y_test, y_pred))
     # Explained variance score: 1 is perfect prediction
-    print('Variance score : %.2f' % r2_score(y_test, y_pred))
+    print(coordinate + ': Variance score : %.2f' % r2_score(y_test, y_pred))
 
     #x_train = x[:int((len(x)/2)*0.7)]
     #y_train = y[:int((len(y)/2)*0.7)]
@@ -111,8 +114,8 @@ if __name__ == "__main__":
     p = parse.Parser('/home/vadim/hackatones/medhack/data/')
     p.parse_path(100)
     p.delete_from_back(500)
-    dataset = p.get_split_database(200)
+    dataset = p.get_split_database(200, 50)
     p.edit_features()
     training(dataset, 'x', ['arctn'], False, True)
     training(dataset, 'y', ['arctn'], False, False)
-    training(dataset, 'z', ['arctn'], False, True)
+    training(dataset, 'z', ['arctn'], False, False)
