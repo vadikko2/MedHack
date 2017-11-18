@@ -1,0 +1,1 @@
+[18:11:2017 23:13:54]: Error: 'str' object has no attribute 'setText'

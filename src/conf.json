@@ -1,8 +1,9 @@
 {
   "Path": "/Users/t_rax/MedHack/data/",
-  "User": "Воробьёва",
+  "User": "Петров",
   "Classifier": "SVM",
   "Regression": "LinerRegression",
-  "Output": "/Users/t_rax/MedHack/outData/"
+  "Output": "/Users/t_rax/MedHack/outData/",
+  "PredictPath": "path"
 
 }

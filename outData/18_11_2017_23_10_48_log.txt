@@ -1,0 +1,3 @@
+[18:11:2017 23:10:55]: Error: 'str' object has no attribute 'setText'
+[18:11:2017 23:11:03]: All data saved in conf.json file
+[18:11:2017 23:11:23]: NAME have a Nothing

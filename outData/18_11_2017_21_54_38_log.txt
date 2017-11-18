@@ -1,0 +1,6 @@
+[18:11:2017 21:54:47]: Preview plot was build
+[18:11:2017 21:54:48]: Preview plot was build
+[18:11:2017 21:54:49]: Preview plot was build
+[18:11:2017 21:54:57]: Missing data.csv file in root directy!
+[18:11:2017 21:54:57]: This person (Петров) don't have a info in data base!
+[18:11:2017 21:55:13]: Preview plot was build

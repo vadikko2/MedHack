@@ -1,0 +1,5 @@
+[18:11:2017 22:32:00]: Preview plot was build
+[18:11:2017 22:32:06]: Preview plot was build
+[18:11:2017 22:32:08]: Preview plot was build
+[18:11:2017 22:32:09]: Preview plot was build
+[18:11:2017 22:32:10]: Preview plot was build

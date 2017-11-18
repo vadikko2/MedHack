@@ -1,0 +1,6 @@
+[18:11:2017 22:51:31]: Missing data.csv file in directy!
+[18:11:2017 22:51:31]: This person () don't have a info in data base!
+[18:11:2017 23:07:56]: Preview plot was build
+[18:11:2017 23:08:20]: Preview plot was build
+[18:11:2017 23:08:43]: Preview plot was build
+[18:11:2017 23:08:46]: Preview plot was build

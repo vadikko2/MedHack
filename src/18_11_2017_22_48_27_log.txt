@@ -1,0 +1,2 @@
+[18:11:2017 22:51:31]: Missing data.csv file in directy!
+[18:11:2017 22:51:31]: This person () don't have a info in data base!
