@@ -157,7 +157,7 @@ meta = True
 pathology = []
 for fd in dataset:
 	temp = fd['person_info']['pathology'].lower()
-	if not temp in pathology:
+	if not temp in pathology or not temp == 'none':
 		pathology.append(temp)
 
 print(pathology)
