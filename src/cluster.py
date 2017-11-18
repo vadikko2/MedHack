@@ -26,6 +26,7 @@ def get_only_coordinate_none_pathology(coord, dataset, params, needMeta = False)
                 tmp.append(dataset[i]['person_info']['height'])
                 tmp.append(dataset[i]['person_info']['feet size'])
                 tmp.append(dataset[i]['walk_info']['gait'])
+                #площадь опоры при ходьбе (в обуви)
           
                 tmp.append(dataset[i]['walk_info']['weight'])
 
@@ -34,11 +35,11 @@ def get_only_coordinate_none_pathology(coord, dataset, params, needMeta = False)
                     
             
                 x.append(np.asarray(regression.preprocess(tmp, params)))
-
+    
             else:
                 for j in range(len(dataset[i]['data']) - 1):
                     tmp.append(dataset[i]['data'][j][coord])
-
+    
                 x.append(tmp)
             
             y.append(dataset[i]['data'][len(dataset[i]['data']) - 1][coord])

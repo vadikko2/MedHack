@@ -1,0 +1,2 @@
+[18:11:2017 15:42:00]: Preview plot was build
+[18:11:2017 15:42:53]: All data saved in conf.json file

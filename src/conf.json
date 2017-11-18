@@ -1,0 +1,8 @@
+{
+  "Path": "/Users/t_rax/MedHack/data/",
+  "User": "Воробьёва",
+  "Classifier": "SVM",
+  "Regression": "LinerRegression",
+  "Output": "/Users/t_rax/MedHack/outData/"
+
+}
