@@ -129,7 +129,7 @@ class MainWindow(QWidget):
 
         self.readAllData()
 
-    
+        '''    
         name, time, dists, svm, marks = analysis.return_data('sample',[30,60,50])
 
         self._userName = name
@@ -156,6 +156,8 @@ class MainWindow(QWidget):
         self.viewEvent(self._userName + ' have a ' + result)
 
         self.viewEvent(self._userName + ' have a ' + result)
+
+        '''
 
     def load_data(self):
 
@@ -222,10 +224,10 @@ class MainWindow(QWidget):
                 for k in data:
                     k = k.split('-')
 
-                    if _type = 1:
+                    if _type == 1:
                         y.append(float(k[1]))
 
-                    if _type = 2:
+                    if _type == 2:
                         y.append([ float(x) for x in k[1].split('_')])
 
                     x_label.append(k[0])
@@ -268,8 +270,19 @@ class MainWindow(QWidget):
                         
                 _l[2] += time.strftime("%d:%m:%Y:%H:%M") + '-' + dists[0] + '_' + dists[1] + '_' + dists[2]
 
-
             lines.append(_l[0] + ';' + _l[1] + ';' + _l[2] + '\n')
+
+        if not findFlag:
+            line = name + ';'
+
+            for i in range(0, len(marks)):
+                line += marks[i] + '-' + str(prob[i]) + ','
+
+            line = line[:len(line)-1]
+
+            line += ';' + time.strftime("%d:%m:%Y:%H:%M") + '-' + dists[0] + '_' + dists[1] + '_' + dists[2] + '\n'
+
+            lines.append(line)
 
         f.close()
 
@@ -308,11 +321,11 @@ class MainWindow(QWidget):
 
             x = [ i for i in range(0, len(x_label))]
 
-            x = [ i[0] for i in data]
-            y = [ i[1] for i in data]
-            z = [ i[2] for i in data]
+            x_1 = [ i[0] for i in data]
+            y_1 = [ i[1] for i in data]
+            z_1 = [ i[2] for i in data]
 
-            ax.plot(y)  
+            ax.plot(x,x_1,x,y_1,x,z_1)  
 
             ax.set_xticks(x)
             ax.set_xticklabels(x_label)
