@@ -1,0 +1,6 @@
+[19:11:2017 05:30:54]: Missing data.csv file in directy!
+[19:11:2017 05:30:54]: This person () don't have a info in data base!
+[19:11:2017 05:30:56]: All data saved in conf.json file
+[19:11:2017 05:30:57]: NAME have a Nothing
+[19:11:2017 05:30:58]: Missing data.csv file in directy!
+[19:11:2017 05:30:58]: This person () don't have a info in data base!
