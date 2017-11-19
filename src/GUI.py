@@ -129,24 +129,31 @@ class MainWindow(QWidget):
 
         self.readAllData()
 
-        result = 'Nothing'
-        name = 'NAME'
-        '''
-        name, data = прочитать файл по пути (self._preditPath) вернуть имя и всю дату для регрессии
-            
-        result = регрессия(data)
+    
+        name, time, dists, svm, marks = analysis.return_data('sample',[30,60,50])
 
-        if result == 'болен':
-            result += SVM(data)
-            
-            сохранить в self._pathToSave + 'data.csv'
+        self._userName = name
 
+        result = 'Pathology find'
+
+        if len(svm) > 0 :
+                
+            result += ': '
+
+            for p in range(0,len(svm)):
+                result += marks[p] + '-' + svm[p] + ','
+
+            result = result[:len(result)-1]
+
+            self.save_data_base(name, marks, svm, time, dists)
             self.viewPlot('View Diagnosis')
 
+        else:
+            result = 'Nothing'
+            
 
- 
-        '''
-        self._userName = name
+        
+        self.viewEvent(self._userName + ' have a ' + result)
 
         self.viewEvent(self._userName + ' have a ' + result)
 
@@ -214,7 +221,13 @@ class MainWindow(QWidget):
 
                 for k in data:
                     k = k.split('-')
-                    y.append(float(k[1]))
+
+                    if _type = 1:
+                        y.append(float(k[1]))
+
+                    if _type = 2:
+                        y.append([ float(x) for x in k[1].split('_')])
+
                     x_label.append(k[0])
 
                 break
@@ -223,6 +236,53 @@ class MainWindow(QWidget):
 
         return y, x_label
 
+    def save_data_base(self,name, marks, prob, time, dists):
+
+        f = []
+
+        try:
+            f = open(self._dataPath + 'data.csv', 'r')
+        except:
+            self.viewEvent('Missing data.csv file in' + self._dataPath + ' directy!')
+            return False
+
+        findFlag = False
+
+        lines = []
+
+        for line in f:
+            line = line.rstrip('\n')
+
+            _l = line.split(';')
+            
+            if _l[0] == name:
+                
+                if len(_l[1]) > 2:
+                    _l[1] += ','
+
+                for i in range(0, len(marks)):
+                    _l[1] += marks[i] + '-' + str(prob[i])
+
+                if len(_l[2]) > 2:
+                    _l[2] += ','
+                        
+                _l[2] += time.strftime("%d:%m:%Y:%H:%M") + '-' + dists[0] + '_' + dists[1] + '_' + dists[2]
+
+
+            lines.append(_l[0] + ';' + _l[1] + ';' + _l[2] + '\n')
+
+        f.close()
+
+        try:
+            f = open(self._dataPath + 'data.csv', 'w')
+        except:
+            self.viewEvent('Missing data.csv file in' + self._dataPath + ' directy!')
+            return False
+
+        for line in lines:
+            f,write(line)
+        
+        f.close()
 
     def view_plt(self):
 
@@ -240,15 +300,19 @@ class MainWindow(QWidget):
        
         if action == 'View Progress':
 
-            y,x_label = self.load_data_base(self._userName, _type = 2)
+            data,x_label = self.load_data_base(self._userName, _type = 2)
 
-            if len(y) == 0:
+            if len(data) == 0:
                 self.viewEvent('This person (' + self._userName + ') don\'t have a info in data base!')
                 return False
 
             x = [ i for i in range(0, len(x_label))]
 
-            ax.plot(y)
+            x = [ i[0] for i in data]
+            y = [ i[1] for i in data]
+            z = [ i[2] for i in data]
+
+            ax.plot(y)  
 
             ax.set_xticks(x)
             ax.set_xticklabels(x_label)
