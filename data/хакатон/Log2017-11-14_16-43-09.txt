@@ -1,0 +1,2 @@
+{"name":"шипулин павел александрович","gender":"male","age":"21","height":"183","weight":"63","feet size":"42","lifestyle":"Среднии","pathology":"2-ая степень плоскостопия и на коленях болезнь Осгульт-Шлятора(в простонародье Шлятор)","trauma":"none","dominant hand":"left","hand retrained":"no"}
+{"gait":"Ходьба","footWear":"Без каблука","weight":"Вес за спиной (рюкзак)","hunger":"Сытый","influence":"Трезвый"}
