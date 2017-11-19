@@ -58,6 +58,7 @@ p.parse_path(100)
 p.delete_from_back(500)
 dataset = p.get_split_database(200)
 p.edit_features()
+print(len(dataset)
 
 x_none, _ = get_only_coordinate_none_pathology('x', dataset, ['arctn'])
 x, _ = get_only_coordinate_pathology('x', dataset, ['arctn'])

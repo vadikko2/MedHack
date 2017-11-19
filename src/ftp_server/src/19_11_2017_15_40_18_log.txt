@@ -1,0 +1,7 @@
+[19:11:2017 15:40:55]: Ivan Dziubenko have a Pathology find: неправильная осанка (возможен сколеоз)-0.500186164584,I степень плоскостопия-0.499700784065,II степень плоскостопия-0.000113051351202
+[19:11:2017 15:40:55]: Preview plot was build
+[19:11:2017 15:40:59]: Preview plot was build
+[19:11:2017 15:41:01]: Preview plot was build
+[19:11:2017 15:41:01]: Preview plot was build
+[19:11:2017 15:41:05]: Preview plot was build
+[19:11:2017 15:41:08]: Preview plot was build

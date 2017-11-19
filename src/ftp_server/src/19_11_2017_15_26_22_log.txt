@@ -1,0 +1,27 @@
+[19:11:2017 15:27:05]: Preview plot was build
+[19:11:2017 15:32:32]: Ivan Dziubenko have a Pathology find: неправильная осанка (возможен сколеоз)-0.00256076607042,I степень плоскостопия-0.570878249153,II степень плоскостопия-0.426560984777
+[19:11:2017 15:32:32]: Preview plot was build
+[19:11:2017 15:32:40]: Preview plot was build
+[19:11:2017 15:33:00]: Preview plot was build
+[19:11:2017 15:33:10]: Preview plot was build
+[19:11:2017 15:33:12]: Preview plot was build
+[19:11:2017 15:33:36]: Preview plot was build
+[19:11:2017 15:33:36]: Preview plot was build
+[19:11:2017 15:33:39]: Preview plot was build
+[19:11:2017 15:33:41]: Preview plot was build
+[19:11:2017 15:34:00]: Ivan Dziubenko have a Pathology find: неправильная осанка (возможен сколеоз)-0.00256076607042,I степень плоскостопия-0.570878249153,II степень плоскостопия-0.426560984777
+[19:11:2017 15:34:00]: Preview plot was build
+[19:11:2017 15:34:04]: Preview plot was build
+[19:11:2017 15:34:06]: Preview plot was build
+[19:11:2017 15:36:05]: Ivan Dziubenko have a Pathology find: неправильная осанка (возможен сколеоз)-0.102732468616,I степень плоскостопия-0.893559017215,II степень плоскостопия-0.00370851416968
+[19:11:2017 15:36:05]: Preview plot was build
+[19:11:2017 15:36:08]: Preview plot was build
+[19:11:2017 15:36:08]: Preview plot was build
+[19:11:2017 15:36:13]: Preview plot was build
+[19:11:2017 15:36:14]: Preview plot was build
+[19:11:2017 15:36:15]: Preview plot was build
+[19:11:2017 15:37:03]: Preview plot was build
+[19:11:2017 15:37:05]: Preview plot was build
+[19:11:2017 15:37:10]: Preview plot was build
+[19:11:2017 15:37:14]: Preview plot was build
+[19:11:2017 15:37:40]: Preview plot was build

@@ -1,9 +1,11 @@
 import json
 import os
 import sys
+import copy
 
 class Parser:
     def __init__(self, path):
+        #print(path)
         self._path = path
         self._data = []
         self._list_path = self.get_list_paths()
@@ -56,6 +58,7 @@ class Parser:
     '''
     def get_list_paths(self):
         try:
+            #print(os.listdir())
             os.chdir('../data/')
         except:
             print('Неправильная структура файлов. Отсутсвует директория ../data/')
@@ -91,31 +94,77 @@ class Parser:
         plt.xticks(indexes + width * 0.5, labels, rotation=90, fontsize = 10, va='bottom', ha='right')
         plt.show()
 
+    '''
+    исправление диагнозов
+    '''
+    def edit_pathology(self):
+        false_pathologies = ['искривление позвоночника, плоскостопие', 'протрузии дисков в крестцово-поясничном отделе',\
+        'дисплозия ', 'коленные связки', 'слишком гибкие связки коленных суставов ','остиохондроз, плоскостопия',\
+        '2-ая степень плоскостопия']
+        tmp = []
+        for d in self._data:
+            try:
+                if d['person_info']['pathology'].lower() == false_pathologies[0]:
+                    d['person_info']['pathology'] = 0#неправильная осанка (возможен сколеоз)
+                    tmp.append(d)
+                if d['person_info']['pathology'].lower() == false_pathologies[1]:
+                    d['person_info']['pathology'] = 'none'
+                    tmp.append(d)
+                if d['person_info']['pathology'].lower() == false_pathologies[2]:
+                    d['person_info']['pathology'] = 'none'
+                    tmp.append(d)
+                if d['person_info']['pathology'].lower() == false_pathologies[3]:
+                    d['person_info']['pathology'] = 'none'
+                    tmp.append(d)
+                if d['person_info']['pathology'].lower() == false_pathologies[4]:
+                    d['person_info']['pathology'] = 'none'
+                    tmp.append(d)
+                if d['person_info']['pathology'].lower() == false_pathologies[5]:
+                    d['person_info']['pathology'] = 1#| степень плоскостопие
+                    tmp.append(d)
+                if d['person_info']['pathology'].lower() == 'плоскостопие':
+                    d['person_info']['pathology'] = 1#| степень плоскостопие
+                    tmp.append(d)
+                if d['person_info']['pathology'] == '2-ая степень плоскостопия и на коленях болезнь осгульт-шлятора(в простонародье шлятор)':
+                    d['person_info']['pathology'] = 2#|| степень плоскостопие
+                    tmp.append(d)
+                if d['person_info']['pathology'] == 'none':
+                    d['person_info']['pathology'] = 'none'
+                    tmp.append(d)
+                if d['person_info']['pathology'] == 'сколиоз':
+                    d['person_info']['pathology'] = 0
+                    tmp.append(d)
+            except:
+                continue
+        self._data #= copy.deepcopy(tmp)
 
     '''
     парсит всю выборку и возвращает список в всех наборов - 1 элемент = 1 снятие движения
     return list[dict[data : list -> dict, person_info : dict, walk_info : dict]]
     '''
     def parse_path(self, min_size_dataset):
-        self.delete_all_info_files()
+        #self.delete_all_info_files()
         self.edit_features()
         for path in self._list_path:
             os.chdir(self._path)
+            #print(path)
             os.chdir(path)
             file_names = os.listdir()
             for i in range(len(file_names)):
                 with open(file_names[i]) as f:
                     person_info = json.loads(f.readline())
+                    person_info['pathology'] = person_info['pathology'].lower()
                     walk_info = json.loads(f.readline())
                     tmp = f.readlines()
                     if (len(tmp) <= min_size_dataset):
-                        print('Слишком короткая выборка:' + " "+ person_info['name'] + ", "+ file_names[i]  + ", size = "+ str(len(tmp)))
+                        pass#print('Слишком короткая выборка:' + " "+ person_info['name'] + ", "+ file_names[i]  + ", size = "+ str(len(tmp)))
                     full_file = []
                     for fd in tmp:
                         txyz = fd.replace('\n', '').split('\t')
                         four = dict(time = int(txyz[0]), x = float(txyz[1]), y = float(txyz[2]), z = float(txyz[3]))
                         full_file.append(four)
                     self._data.append(dict(person_info = person_info, walk_info = walk_info, data = full_file))
+        self.edit_pathology()
         return self._data
 
 
@@ -154,17 +203,20 @@ class Parser:
     разделение выборки на временные отрезки на вход подаётся один элемент выборки и времянной промежуток
     обратно возвращается столько кусков, сколько влезет
     '''
-    def split_only_data_element(self, data_element, num_parts):
+    def split_only_data_element(self, data_element, num_parts, step):
         title = [data_element['person_info'], data_element['walk_info']]
         parts = []
         tmp = []
-        for i in range(len(data_element['data'])):
-            tmp.append(data_element['data'][i])
-            if len(tmp) == num_parts:
-                value = dict(person_info = title[0], walk_info = title[1], data = tmp)
-                parts.append(value)
-                del tmp
-                tmp = []
+        i = 0
+        while i < len(data_element['data']) - num_parts:
+            for j in range(i, i+num_parts):
+                tmp.append(data_element['data'][j])
+                if len(tmp) == num_parts:
+                    value = dict(person_info = title[0], walk_info = title[1], data = tmp)
+                    parts.append(value)
+                    del tmp
+                    tmp = []
+            i+=step
         return parts
 
     '''
@@ -172,10 +224,10 @@ class Parser:
     необходимо указать какого размера будет участок (количественно)
     вернёт разделенныю выборку, но в поле self._data всё равно останется выборка не разделённая
     '''
-    def get_split_database(self, parts_size):
+    def get_split_database(self, parts_size, step):
         split_data = []
         for d in self._data:
-            split_data += self.split_only_data_element(d, parts_size)
+            split_data += self.split_only_data_element(d, parts_size, step)
         return split_data
 
 
@@ -183,9 +235,8 @@ if __name__ == "__main__":
     p = Parser('/home/vadim/hackatones/medhack/data/')
     data = p.parse_path(100)
     #p.view_rating('person_info', 'pathology', data)
-    p.delete_from_back(20)
-    split_data = p.get_split_database(10)
-    p.edit_features()
-    print(split_data[0]['person_info'])
-    print(split_data[0]['walk_info'])
-    #p.view_rating('walk_info', 'influence', split_data)
+    p.delete_from_back(500)
+    split_data = p.get_split_database(200, 10)
+    #print(split_data[0]['person_info'])
+    #print(split_data[0]['walk_info'])
+    p.view_rating('person_info', 'pathology', split_data)

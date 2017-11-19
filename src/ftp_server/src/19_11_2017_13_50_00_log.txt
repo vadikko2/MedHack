@@ -1,0 +1,7 @@
+[19:11:2017 13:50:10]: Missing data.csv file in/home/vadim/hackatones/medhack/src/ftp_server/src/log/ directy!
+[19:11:2017 13:50:10]: This person (Vadim) don't have a info in data base!
+[19:11:2017 13:50:20]: Missing data.csv file in/home/vadim/hackatones/medhack/src/ftp_server/src/log/ directy!
+[19:11:2017 13:50:20]: Missing data.csv file in/home/vadim/hackatones/medhack/src/ftp_server/src/log/ directy!
+[19:11:2017 13:50:20]: This person (Vadim) don't have a info in data base!
+[19:11:2017 13:50:20]: Vadim have a Pathology find: неправильная осанка (возможен сколеоз)-0.458690949142,| степень плоскостопия-0.541221189935,|| степень плоскостопия-8.7860923691e-05
+[19:11:2017 13:50:20]: Vadim have a Pathology find: неправильная осанка (возможен сколеоз)-0.458690949142,| степень плоскостопия-0.541221189935,|| степень плоскостопия-8.7860923691e-05

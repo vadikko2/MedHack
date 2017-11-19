@@ -1,0 +1,9 @@
+[19:11:2017 14:13:41]: Preview plot was build
+[19:11:2017 14:13:41]: oleg have a Pathology find: неправильная осанка (возможен сколеоз)-0.458690949142,I степень плоскостопия-0.541221189935,II степень плоскостопия-8.7860923691e-05
+[19:11:2017 14:14:28]: Preview plot was build
+[19:11:2017 14:14:38]: Preview plot was build
+[19:11:2017 14:14:39]: Preview plot was build
+[19:11:2017 14:14:40]: Preview plot was build
+[19:11:2017 14:14:40]: Preview plot was build
+[19:11:2017 14:14:41]: Preview plot was build
+[19:11:2017 14:14:44]: Preview plot was build
